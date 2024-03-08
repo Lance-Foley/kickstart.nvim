@@ -633,7 +633,6 @@ require('lazy').setup {
         ruby = { 'rubocop' },
         html = { 'htmlbeautifier' },
         eruby = { 'htmlbeautifier' },
-        javascript = { 'prettier' },
 
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },

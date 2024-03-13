@@ -187,6 +187,9 @@ vim.keymap.set('n', '<leader>fs', ':Neotree show <CR>', { desc = 'Open & Not Foc
 vim.keymap.set('n', '<leader>ff', ':Neotree focus <CR>', { desc = 'Open & Toggle Focus FileTree' })
 vim.keymap.set('n', '<leader>ft', ':Neotree toggle <CR>', { desc = 'Toggle FileTree' })
 vim.keymap.set('n', '<leader>fc', ':Neotree close <CR>', { desc = 'Close FileTree' })
+
+vim.keymap.set('n', '<leader>Rev', 'i<%= %><Esc>hi', { desc = '<%= %>' })
+vim.keymap.set('n', '<leader>Reh', 'i<%= %><Esc>hi', { desc = '<% %>' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -224,6 +227,8 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup {
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'tpope/vim-fugitive',
+  'tpope/vim-rails',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -284,11 +289,29 @@ require('lazy').setup {
         ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
         ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
         ['<leader>f'] = { name = '[F]ileTree', _ = 'which_key_ignore' },
+        ['<leader>R'] = { name = '[R]uby snippets', _ = 'which_key_ignore' },
+        ['<leader>Re'] = { name = '[e]rb', _ = 'which_key_ignore' },
       }
     end,
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
+    opts = {
+      filesystem = {
+        filtered_items = {
+          visible = true,
+          show_hidden_count = true,
+          hide_dotfiles = false,
+          hide_gitignored = true,
+          hide_by_name = {
+            -- '.git',
+            -- '.DS_Store',
+            -- 'thumbs.db',
+          },
+          never_show = {},
+        },
+      },
+    },
     branch = 'v3.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -600,7 +623,6 @@ require('lazy').setup {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format lua code
-        'rubocop',
         'htmlbeautifier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }

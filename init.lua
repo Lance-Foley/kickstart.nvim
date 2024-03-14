@@ -190,6 +190,7 @@ vim.keymap.set('n', '<leader>fc', ':Neotree close <CR>', { desc = 'Close FileTre
 
 vim.keymap.set('n', '<leader>Rev', 'i<%= %><Esc>hi', { desc = '<%= %>' })
 vim.keymap.set('n', '<leader>Reh', 'i<%= %><Esc>hi', { desc = '<% %>' })
+vim.keymap.set('n', '<leader>Rec', 'i<%# %><Esc>hi', { desc = '<%# %>' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 

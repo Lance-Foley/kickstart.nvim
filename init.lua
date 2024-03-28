@@ -153,6 +153,9 @@ vim.opt.scrolloff = 10
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
+
+-- Show relative numbers
+vim.opt.relativenumber = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
@@ -625,6 +628,7 @@ require('lazy').setup {
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format lua code
         'htmlbeautifier',
+        'rufo',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -653,7 +657,7 @@ require('lazy').setup {
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        ruby = { 'rubocop' },
+        ruby = { 'rufo' },
         html = { 'htmlbeautifier' },
         eruby = { 'htmlbeautifier' },
 

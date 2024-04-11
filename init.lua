@@ -192,8 +192,10 @@ vim.keymap.set('n', '<leader>ft', ':Neotree toggle <CR>', { desc = 'Toggle FileT
 vim.keymap.set('n', '<leader>fc', ':Neotree close <CR>', { desc = 'Close FileTree' })
 
 vim.keymap.set('n', '<leader>Rev', 'i<%= %><Esc>hi', { desc = '<%= %>' })
-vim.keymap.set('n', '<leader>Reh', 'i<%= %><Esc>hi', { desc = '<% %>' })
+vim.keymap.set('n', '<leader>Reh', 'i<% %><Esc>hi', { desc = '<% %>' })
 vim.keymap.set('n', '<leader>Rec', 'i<%# %><Esc>hi', { desc = '<%# %>' })
+
+vim.keymap.set('n', '<leader>v', ':vsplit', { desc = ':vertical split buffer' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -233,6 +235,8 @@ require('lazy').setup {
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive',
   'tpope/vim-rails',
+
+  'sindrets/diffview.nvim',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following

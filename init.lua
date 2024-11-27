@@ -1,60 +1,18 @@
---]]
-
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
-
--- Make line numbers default
 vim.opt.number = true
--- You can also add relative line numbers, for help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in status line
 vim.opt.showmode = false
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
 vim.opt.clipboard = 'unnamedplus'
-
--- Enable break indent
 vim.opt.breakindent = true
-
--- Save undo history
 vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or capital in search
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
-
--- Decrease update time
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
-
--- Configure how new splits should be opened
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
 
@@ -151,6 +109,35 @@ require('lazy').setup {
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive',
   'tpope/vim-rails',
+  'xiyaowong/transparent.nvim',
+  {
+    'nvim-neorg/neorg',
+    lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+    version = '*', -- Pin Neorg to the latest stable release
+    config = true,
+  },
+  {
+    'zbirenbaum/copilot-cmp',
+    config = function()
+      require('copilot_cmp').setup {
+        suggestion = { enable = false },
+        panel = { enable = false },
+      }
+    end,
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'canary',
+    dependencies = {
+      { 'github/copilot.vim' }, -- or zbirenbaum/copilot.lua
+      { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
+    },
+    build = 'make tiktoken', -- Only on MacOS or Linux
+    opts = {
+      -- See Configuration section for options
+    },
+    -- See Commands section for default commands if you want to lazy load on them
+  },
 
   'sindrets/diffview.nvim',
 
@@ -202,21 +189,55 @@ require('lazy').setup {
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup()
+    opts = {
+      icons = {
+        -- set icon mappings to true if you have a Nerd Font
+        mappings = vim.g.have_nerd_font,
+        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
+        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
+        keys = vim.g.have_nerd_font and {} or {
+          Up = '<Up> ',
+          Down = '<Down> ',
+          Left = '<Left> ',
+          Right = '<Right> ',
+          C = '<C-…> ',
+          M = '<M-…> ',
+          D = '<D-…> ',
+          S = '<S-…> ',
+          CR = '<CR> ',
+          Esc = '<Esc> ',
+          ScrollWheelDown = '<ScrollWheelDown> ',
+          ScrollWheelUp = '<ScrollWheelUp> ',
+          NL = '<NL> ',
+          BS = '<BS> ',
+          Space = '<Space> ',
+          Tab = '<Tab> ',
+          F1 = '<F1>',
+          F2 = '<F2>',
+          F3 = '<F3>',
+          F4 = '<F4>',
+          F5 = '<F5>',
+          F6 = '<F6>',
+          F7 = '<F7>',
+          F8 = '<F8>',
+          F9 = '<F9>',
+          F10 = '<F10>',
+          F11 = '<F11>',
+          F12 = '<F12>',
+        },
+      },
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>f'] = { name = '[F]ileTree', _ = 'which_key_ignore' },
-        ['<leader>R'] = { name = '[R]uby snippets', _ = 'which_key_ignore' },
-        ['<leader>Re'] = { name = '[e]rb', _ = 'which_key_ignore' },
-      }
-    end,
+      spec = {
+        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>r', group = '[R]ename' },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>t', group = '[T]oggle' },
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+      },
+    },
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
@@ -254,7 +275,7 @@ require('lazy').setup {
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
+    event = 'VeryLazy',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -496,7 +517,7 @@ require('lazy').setup {
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
-        ruby_ls = {},
+        ruby_lsp = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -634,6 +655,24 @@ require('lazy').setup {
             luasnip.lsp_expand(args.body)
           end,
         },
+        sorting = {
+          priority_weight = 2,
+          comparators = {
+            require('copilot_cmp.comparators').prioritize,
+
+            -- Below is the default comparitor list and order for nvim-cmp
+            cmp.config.compare.offset,
+            -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            cmp.config.compare.locality,
+            cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
+        },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- For an understanding of why these mappings were
@@ -660,7 +699,7 @@ require('lazy').setup {
           --  So if you have a snippet that's like:
           --  function $name($args)
           --    $body
-          --  end
+          -- <c-l> will move you to the right of each of the expa
           --
           -- <c-l> will move you to the right of each of the expansion locations.
           -- <c-h> is similar, except moving you backwards.
@@ -676,9 +715,10 @@ require('lazy').setup {
           end, { 'i', 's' }),
         },
         sources = {
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
+          { name = 'copilot', group_index = 2 },
+          { name = 'nvim_lsp', group_index = 2 },
+          { name = 'path', group_index = 2 },
+          { name = 'luasnip', group_index = 2 },
         },
       }
     end,
@@ -714,8 +754,8 @@ require('lazy').setup {
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
-
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
+      require('mini.ai').setup { n_lines = 500 }
+      -- (Add)/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes

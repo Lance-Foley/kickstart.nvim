@@ -111,30 +111,6 @@ require('lazy').setup {
   'tpope/vim-rails',
   'xiyaowong/transparent.nvim',
   {
-    'nvim-neorg/neorg',
-    lazy = false,
-    version = '*',
-    config = function()
-      require('neorg').setup {
-        load = {
-          ['core.defaults'] = {},
-          ['core.concealer'] = {},
-          ['core.dirman'] = {
-            config = {
-              workspaces = {
-                notes = '~/notes',
-              },
-              default_workspace = 'notes',
-            },
-          },
-        },
-      }
-
-      vim.wo.foldlevel = 99
-      vim.wo.conceallevel = 2
-    end,
-  },
-  {
     'zbirenbaum/copilot-cmp',
     config = function()
       require('copilot_cmp').setup {
@@ -798,7 +774,15 @@ require('lazy').setup {
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
-
+  {
+    'rebelot/kanagawa.nvim', -- neorg needs a colorscheme with treesitter support
+    config = function()
+      vim.cmd.colorscheme 'kanagawa'
+    end,
+  },
+  {
+    'rrethy/nvim-treesitter-endwise',
+  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -807,11 +791,12 @@ require('lazy').setup {
 
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc', 'ruby' },
+        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc', 'ruby', 'query', 'vimdoc' },
         -- Autoinstall languages that are not installed
         auto_install = true,
         highlight = { enable = true },
         indent = { enable = true },
+        endwise = { enable = true },
       }
 
       -- There are additional nvim-treesitter modules that you can use to interact
@@ -820,6 +805,33 @@ require('lazy').setup {
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    end,
+  },
+  {
+    'nvim-neorg/neorg',
+    build = ':Neorg sync-parsers',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    lazy = false,
+    -- version = "*",
+    config = function()
+      require('neorg').setup {
+        load = {
+          ['core.defaults'] = {}, -- Loads default behaviour
+          ['core.concealer'] = {}, -- Adds pretty icons to your documents
+          ['core.dirman'] = { -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                notes = '~/notes', -- Make sure this directory exists!
+              },
+              default_workspace = 'notes',
+            },
+          },
+        },
+      }
+
+      -- These settings help with folding and concealment
+      vim.wo.foldlevel = 99
+      vim.wo.conceallevel = 2
     end,
   },
 
